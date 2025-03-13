@@ -117,4 +117,9 @@ https://pokeapi.co/
 ![](Images/Gantt-chart.png "")
 
 ### Structure Chart
-https://excalidraw.com/#json=QgU3eq1BSxLrpu0BSCuwU,Yr1pfzCVGh21iWLv6yV93A
+![](Images/Structure-chart.png "")
+
+### Algorithms - Flowchart
+**Main**
+![](Images/Algorithms-main().png "")
+**Play Sound**
