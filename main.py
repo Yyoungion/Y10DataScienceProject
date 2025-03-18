@@ -1,7 +1,20 @@
-from playsound import playsound
-import requests, pygame, sys, time
-pygame.mixer.init()
-y = "ditto"
-API_URL = "https://pokeapi.co/api/v2/pokemon/{y}"
-x = requests.get("https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/132.ogg")
-pygame.mixer.Sound(x)
+import requests
+
+base_url = "https://pokeapi.co/api/v2/"
+
+def get_pokemon_info(name):
+    url = f"{base_url}/pokemon/{name}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        pokemon_data = response.json()
+        return pokemon_data
+    else:
+        print(f"Failed to retrieve data {response.status_code}")
+
+pokemon_name = "pikachu"
+pokemon_info = get_pokemon_info(pokemon_name)
+
+if pokemon_info:
+    print(f"{pokemon_info['name']}")
+    print(f"{pokemon_info['latest']}")
