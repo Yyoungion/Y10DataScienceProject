@@ -20,29 +20,7 @@ pokemon_name = "ditto"
 pokemon_info = get_pokemon_info(pokemon_name)
 
 if pokemon_info:
-    a = f"{pokemon_info["cries"]["latest"]  }"
-    b = requests.get(a)
+    a = f"{pokemon_info['cries']['latest']}"
+    print(a)
     
-doc = requests.get(b)
-f = open("movie.mp3","wb")
-f.write(doc.text)
-f.close()
-    
-    
-    
-def playmusic():       
-    def play_music(b):
-        pygame.mixer.init()
-        pygame.mixer.music.load(b)
-        pygame.mixer.play_music()
-    
-    def wait_for_input():
-        input()
-        pygame.mixer.music.stop()
-  
 
-    music_thread = threading.Thread(target=play_music, args=(b))
-    input_thread = threading.Thread(target=wait_for_input)
-
-    music_thread.start()
-    input_thread.start()

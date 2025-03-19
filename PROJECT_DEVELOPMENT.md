@@ -121,8 +121,55 @@ https://pokeapi.co/
 
 ### Algorithms - Flowchart
 **Main**
-![](Images/Algorithms-main().png "")
-**Play Sound**\
-https://excalidraw.com/#json=I_JQZiRFZNsCzXQ1dheiE,wzHe-KWKzs1G8qsaeHuxqw
-**Play Random Sound**\
+![](Images/Algorithms-main().png "") 
+**Play Sound** \
+![](Images/Algorithms-playsound().png "")\
+**Play Random Sound** \
 ![](Images/Algorithms-playrandomsound().png "")
+
+### Algorithms - Pseudocode
+**Main** \
+BEGIN main() \
+&nbsp;&nbsp; choice = 0 \
+&nbsp;&nbsp; WHILE choice is not 4 \
+&nbsp;&nbsp;&nbsp;&nbsp; INPUT choice \
+&nbsp;&nbsp;&nbsp;&nbsp; WHILE choice is bigger than 4 \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; playrandomsound \
+&nbsp;&nbsp;&nbsp;&nbsp; ENDWHILE \
+&nbsp;&nbsp;&nbsp;&nbsp; IF choice is 1 THEN \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; playsound \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF storesound is true THEN \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; storesound \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do nothing \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ENDIF \
+&nbsp;&nbsp;&nbsp;&nbsp; ELSEIF choice is 2 THEN \
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; playstoresound \
+&nbsp;&nbsp;&nbsp;&nbsp; ELSE \
+&nbsp;&nbsp;&nbsp;&nbsp; do nothing \
+&nbsp;&nbsp;&nbsp;&nbsp; ENDIF \
+&nbsp;&nbsp; ENDWHILE \
+END main() 
+
+**Play Sound**\
+BEGIN playsound(number) \
+&nbsp;&nbsp; request API \
+&nbsp;&nbsp; pokemon = number \
+&nbsp;&nbsp; DISPLAY pokemon sound \
+END playsound() 
+
+**Play Random Sound**\
+BEGIN playrandomsound() \
+&nbsp;&nbsp; i = 0 \
+&nbsp;&nbsp; WHILE i is smaller than 10 \
+&nbsp;&nbsp;&nbsp;&nbsp; rn is equal to random.randint(1, 1302) \
+&nbsp;&nbsp;&nbsp;&nbsp; playsound(rn) \
+&nbsp;&nbsp;&nbsp;&nbsp; i is equal to i + 1 \
+&nbsp;&nbsp; ENDWHILE \
+END playrandomsound()
+
+### Data Dictionary
+| Variable | Data Type | Format for Display | Size in Bytes | Size for Display | Description | Example | Validation |
+| -------- | ------- | -------- | ------- | -------- | ------- | -------- | -------- |
+| PokemonID | Integer | Whole number | 4 | 4 | The pokemon's ID number | 123 | It has to be bigger or equal to one or small or equal to 1302 |
+
