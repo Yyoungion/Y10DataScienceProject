@@ -122,4 +122,7 @@ https://pokeapi.co/
 ### Algorithms - Flowchart
 **Main**
 ![](Images/Algorithms-main().png "")
-**Play Sound**
+**Play Sound**\
+https://excalidraw.com/#json=I_JQZiRFZNsCzXQ1dheiE,wzHe-KWKzs1G8qsaeHuxqw
+**Play Random Sound**\
+![](Images/Algorithms-playrandomsound().png "")
