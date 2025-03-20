@@ -58,11 +58,11 @@ def playrandomsound():
             fout.write(resp.content)
         time.sleep(1)
         
-    lists_of_songs = os.listdir(r"c:\Users\Yyoung Du\Documents\Github\Y10DataScienceProject\RandomSound"'\\')
+    lists_of_songs = os.listdir(r"C:\Users\Yi.du8\Documents\GitHub\Y10DataScienceProject\RandomSound")
 
     for song in lists_of_songs:
         if song.endswith(".mp3"):
-            file_path = r"c:\Users\Yyoung Du\Documents\Github\Y10DataScienceProject\RandomSound"'\\' + song
+            file_path = r"C:\Users\Yi.du8\Documents\GitHub\Y10DataScienceProject\RandomSound"'\\' + song
             pygame.mixer.music.load(str(file_path))
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy() == True:
