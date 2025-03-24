@@ -12,17 +12,23 @@ base_url = "https://pokeapi.co/api/v2/"
 
 def get_pokemon_info(name):
     try:
+        # Construct the URL for the Pokémon API using base_url and the name of the Pokémon
         url = f"{base_url}/pokemon/{name}"
+        # Send a request to the API to fetch Pokémon data
         response = requests.get(url)
 
+        # Check if the request was successful (HTTP status code 200)
         if response.status_code == 200:
             pokemon_data = response.json()
-            return pokemon_data
+            return pokemon_data  # Return the data for further processing
         else:
+            # If the request fails, print an error message with the status code
             print(f"Failed to retrieve data {response.status_code}")
-            
+
+    # Handle any exception that might occur during the try block
     except:
         pass
+
 
 def download_all_pokemon():
     print("Do you want to have all the pokemon sound files? ")
@@ -74,34 +80,43 @@ def playrandomsound():
         pass
 
 def playsound():
+    # Ask the user to input the name of a Pokémon they want to hear
     poke = input("What Pokémon do you want to hear? ")
-    pokemon_info = get_pokemon_info(poke)
-    pokeID = f"{pokemon_info['id']}"
-    pokesound = f"{str(pokeID).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
 
+    # Retrieve Pokémon information
+    pokemon_info = get_pokemon_info(poke)
+
+    # Get the Pokémon's ID to create the sound file name
+    pokeID = f"{pokemon_info['id']}"  # Extract Pokémon's ID
+    pokesound = f"{str(pokeID).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"  # Create Filename
+
+    # Define the path to save the sound file
     out_file = Path(os.path.join("SoundStorage", f"{pokesound}.ogg")).expanduser()
 
+    # Check if the sound file already exists
     if not out_file.exists():
+        # If not, download the sound file from the URL
         resp = requests.get(f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg")
-        resp.raise_for_status()
+        resp.raise_for_status()  # Raise an error if the request fails
+        # Save the downloaded content to the file
         with open(out_file, "wb") as fout:
             fout.write(resp.content)
         print("File downloaded and saved.")
     else:
+        # If the file already exists, skip the download
         print("File already exists. Skipping download.")
 
-    pygame.mixer.quit()  # Reset pygame
-    pygame.mixer.init()
+    pygame.mixer.quit()  # Reset pygame mixer settings
+    pygame.mixer.init()  # Reinitialize the mixer
 
-    file_path = os.path.join("SoundStorage", f"{pokesound}.ogg")
-    pygame.mixer.music.load(str(file_path))
-    pygame.mixer.music.play()
+    # Load the sound file into pygame
+    file_path = os.path.join("SoundStorage", f"{pokesound}.ogg")  # Get the full path to the sound file
+    pygame.mixer.music.load(str(file_path))  # Load the sound file
+    pygame.mixer.music.play()  # Play the sound
 
+    # Keep the program running while the sound is playing
     while pygame.mixer.music.get_busy():
         continue
-
-
-
 
 def playallstoredsound():
     try:
