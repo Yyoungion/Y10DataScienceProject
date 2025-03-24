@@ -74,25 +74,34 @@ def playrandomsound():
         pass
 
 def playsound():
-    try:
-        poke = input("What pokemon do you want to hear? ")
-        pokemon_info = get_pokemon_info(poke)
-        pokeID = f"{pokemon_info['id']}"
-        pokesound = f"{str(pokeID).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
-        out_file = Path(f"SoundStorage\{pokesound.capitalize()}.ogg").expanduser()
+    poke = input("What Pokémon do you want to hear? ")
+    pokemon_info = get_pokemon_info(poke)
+    pokeID = f"{pokemon_info['id']}"
+    pokesound = f"{str(pokeID).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
+
+    out_file = Path(os.path.join("SoundStorage", f"{pokesound}.ogg")).expanduser()
+
+    if not out_file.exists():
         resp = requests.get(f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg")
         resp.raise_for_status()
         with open(out_file, "wb") as fout:
             fout.write(resp.content)
-        time.sleep(1)
-        file_path = r"SoundStorage"'\\' + pokesound + ".ogg"
-        pygame.mixer.music.load(str(file_path))
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy() == True:
-            continue
-        print("This sound has been automatically saved (If it hasn't been already).")
-    except:
-        pass
+        print("File downloaded and saved.")
+    else:
+        print("File already exists. Skipping download.")
+
+    pygame.mixer.quit()  # Reset pygame
+    pygame.mixer.init()
+
+    file_path = os.path.join("SoundStorage", f"{pokesound}.ogg")
+    pygame.mixer.music.load(str(file_path))
+    pygame.mixer.music.play()
+
+    while pygame.mixer.music.get_busy():
+        continue
+
+
+
 
 def playallstoredsound():
     try:
@@ -122,45 +131,45 @@ def viewstoresound():
         pass
     
 def main():
-    try:
-        while True:
-            print("To hear a pokemon sound input 1")
-            print("To view stored pokemon, input 2")
-            print("To play all of the stored pokemon. input 3")
-            print("To quit, input 4")
-            choice = int(input("What do you want to do (1 - 4): "))
+    a = 2
+    while a == 2:
+        try:
+            while True:
+                print("To hear a pokemon sound input 1")
+                print("To view stored pokemon, input 2")
+                print("To play all of the stored pokemon. input 3")
+                print("To quit, input 4")
+                choice = int(input("What do you want to do (1 - 4): "))
+                
+                if choice == 1:
+                    playsound()
+                    time.sleep(2)
+                    print("")
+                    print("")
+                elif choice == 2:
+                    viewstoresound()
+                    time.sleep(2)
+                    print("")
+                    print("")
+                elif choice == 3:
+                    playallstoredsound()
+                    time.sleep(2)
+                    print("")
+                    print("")
+                elif choice == 4:
+                    a = 1
+                    exit
+                    quit
+                    break
             
-            if choice == 1:
-                playsound()
-                time.sleep(3)
-                print("")
-                print("")
-            elif choice == 2:
-                viewstoresound()
-                time.sleep(3)
-                print("")
-                print("")
-            elif choice == 3:
-                playallstoredsound()
-                time.sleep(3)
-                print("")
-                print("")
-            elif choice == 4:
-                exit
-                quit
-                break
-            else:
-                print("ERROR - U stupid Please try again")
-                playrandomsound()
-                time.sleep(3)
-                print("")
-                print("")
-    except:
-        print("Error. Try again")
-        print("")
-        print("")
-        main()
-    
+
+        except:
+            print("ERROR - U stupid Please try again")
+            playrandomsound()
+            time.sleep(2)
+            print("")
+            print("")
+
 main()
 
 
