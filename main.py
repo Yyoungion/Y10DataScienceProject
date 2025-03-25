@@ -110,6 +110,8 @@ def playsound():
     except Exception as e:
         messagebox.showerror("Error", f"An unexpected error occurred: {e}")
 =======
+=======
+>>>>>>> parent of f9f92cb (Fix my code. It now doesnt break if the file is already downloaded.)
         poke = input("What pokemon do you want to hear? ")
         pokemon_info = get_pokemon_info(poke)
         pokeID = f"{pokemon_info['id']}"
@@ -128,6 +130,9 @@ def playsound():
         print("This sound has been automatically saved (If it hasn't been already).")
     except:
         pass
+<<<<<<< HEAD
+>>>>>>> parent of f9f92cb (Fix my code. It now doesnt break if the file is already downloaded.)
+=======
 >>>>>>> parent of f9f92cb (Fix my code. It now doesnt break if the file is already downloaded.)
 
 def playallstoredsound():
@@ -244,6 +249,13 @@ def main():
         print("")
         print("")
         main()
+
+
+
+
+
+
+>>>>>>> parent of f9f92cb (Fix my code. It now doesnt break if the file is already downloaded.)
     
 main()
 >>>>>>> parent of f9f92cb (Fix my code. It now doesnt break if the file is already downloaded.)
