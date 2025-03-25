@@ -5,6 +5,7 @@ from pathlib import Path
 import random
 import os
 import tkinter as tk
+from tkinter import messagebox
 
 pygame.init()
 pygame.mixer.init()
@@ -56,48 +57,49 @@ def playrandomsound():
     except:
         pass
 
+
 def playsound():
     try:
-        # Get the Pokémon name from the entry field
         poke = entry_pokemon.get().strip().lower()
         if not poke:
             messagebox.showwarning("Input Error", "Please enter a Pokémon name!")
             return
 
-        # Retrieve Pokémon information
         pokemon_info = get_pokemon_info(poke)
         if not pokemon_info:
             messagebox.showerror("Error", f"Pokémon '{poke}' not found!")
             return
 
-        # Generate the sound file name using Pokémon ID and form name
         pokeID = str(pokemon_info['id']).zfill(4)
-        pokesound = f"{pokeID}_{pokemon_info['forms'][0]['name']}.latest"
+        poke_name = pokemon_info['forms'][0]['name'].lower()
+        pokesound = f"{pokeID}_{poke_name}.latest"
         out_file = Path(f"SoundStorage/{pokesound}.ogg").expanduser()
 
-        # Check if the sound file exists locally
+        url = f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg"
+        response = requests.head(url)
+        
+        if response.status_code != 200:
+            messagebox.showerror("Error", f"Sound file not found for {poke.capitalize()} at {url}")
+            return
+
         if not out_file.exists():
-            # Download the sound file
             try:
-                url = f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg"
                 resp = requests.get(url)
                 resp.raise_for_status()
 
-                out_file.parent.mkdir(parents=True, exist_ok=True)  # Create directory if it doesn't exist
+                out_file.parent.mkdir(parents=True, exist_ok=True)
                 with open(out_file, "wb") as fout:
                     fout.write(resp.content)
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred while downloading the sound file: {e}")
                 return
 
-        # Play the sound file using pygame
         try:
-            pygame.mixer.quit()  # Reset pygame mixer settings
+            pygame.mixer.quit()
             pygame.mixer.init()
             pygame.mixer.music.load(str(out_file))
             pygame.mixer.music.play()
             messagebox.showinfo("Success", f"Playing sound for {poke.capitalize()}!")
-            # Keep the program running while the sound is playing
             while pygame.mixer.music.get_busy():
                 continue
         except Exception as e:
@@ -105,44 +107,6 @@ def playsound():
 
     except Exception as e:
         messagebox.showerror("Error", f"An unexpected error occurred: {e}")
-
-    # Ask the user to input the name of a Pokémon they want to hear
-    poke = input("What Pokémon do you want to hear? ")
-
-    # Retrieve Pokémon information
-    pokemon_info = get_pokemon_info(poke)
-
-    # Get the Pokémon's ID to create the sound file name
-    pokeID = f"{pokemon_info['id']}"  # Extract Pokémon's ID
-    pokesound = f"{str(pokeID).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"  # Create Filename
-
-    # Define the path to save the sound file
-    out_file = Path(os.path.join("SoundStorage", f"{pokesound}.ogg")).expanduser()
-
-    # Check if the sound file already exists
-    if not out_file.exists():
-        # If not, download the sound file from the URL
-        resp = requests.get(f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg")
-        resp.raise_for_status()  # Raise an error if the request fails
-        # Save the downloaded content to the file
-        with open(out_file, "wb") as fout:
-            fout.write(resp.content)
-        print("File downloaded and saved.")
-    else:
-        # If the file already exists, skip the download
-        print("File already exists. Skipping download.")
-
-    pygame.mixer.quit()  # Reset pygame mixer settings
-    pygame.mixer.init()  # Reinitialize the mixer
-
-    # Load the sound file into pygame
-    file_path = os.path.join("SoundStorage", f"{pokesound}.ogg")  # Get the full path to the sound file
-    pygame.mixer.music.load(str(file_path))  # Load the sound file
-    pygame.mixer.music.play()  # Play the sound
-
-    # Keep the program running while the sound is playing
-    while pygame.mixer.music.get_busy():
-        continue
 
 def playallstoredsound():
     try:
@@ -235,54 +199,3 @@ button_view_stored.pack(pady=5)
 
 # Run the GUI loop
 root.mainloop() 
- 
-def main():
-    a = 2
-    while a == 2:
-        try:
-            while True:
-                print("To hear a pokemon sound input 1")
-                print("To view stored pokemon, input 2")
-                print("To play all of the stored pokemon. input 3")
-                print("To quit, input 4")
-                choice = int(input("What do you want to do (1 - 4): "))
-                
-                if choice == 1:
-                    playsound()
-                    time.sleep(2)
-                    print("")
-                    print("")
-                elif choice == 2:
-                    viewstoresound()
-                    time.sleep(2)
-                    print("")
-                    print("")
-                elif choice == 3:
-                    playallstoredsound()
-                    time.sleep(2)
-                    print("")
-                    print("")
-                elif choice == 4:
-                    a = 1
-                    exit
-                    quit
-                    break
-            
-
-        except:
-            print("ERROR - U stupid Please try again")
-            playrandomsound()
-            time.sleep(2)
-            print("")
-            print("")
-
-GUI()
-
-
-
-
-
-
-
-    
-
