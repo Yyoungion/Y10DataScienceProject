@@ -61,6 +61,7 @@ def playrandomsound():
 def playsound():
     try:
 <<<<<<< HEAD
+<<<<<<< HEAD
         poke = entry_pokemon.get().strip().lower()
         if not poke:
             messagebox.showwarning("Input Error", "Please enter a Pokémon name!")
