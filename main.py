@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 import random
 import os
+import tkinter as tk
 
 pygame.init()
 pygame.mixer.init()
@@ -28,30 +29,6 @@ def get_pokemon_info(name):
     # Handle any exception that might occur during the try block
     except:
         pass
-
-
-def download_all_pokemon():
-    print("Do you want to have all the pokemon sound files? ")
-    print("This will remove the need to download a pokemon call every time you want to play a sound from a new pokemon.")
-    print("This may take a long time.")
-    download = input("Y/N ")
-
-    if download == "Y":
-        print("Downloading")
-        print("Estimated time: 20 minutes")
-        for i in range(1,1026):
-            pokemon_info = get_pokemon_info(i)
-            a = f"{str(i).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
-
-            out_file = Path(f"~/Documents/Github\Y10DataScienceProject\SoundStorageALL\{a.capitalize()}.mp3").expanduser()
-            resp = requests.get(f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{i}.ogg")
-            resp.raise_for_status()
-            with open(out_file, "wb") as fout:
-                fout.write(resp.content)
-    elif download == "N":
-        pass
-    else:
-        playrandomsound()
 
 def playrandomsound():
     try:
@@ -80,6 +57,55 @@ def playrandomsound():
         pass
 
 def playsound():
+    try:
+        # Get the Pokémon name from the entry field
+        poke = entry_pokemon.get().strip().lower()
+        if not poke:
+            messagebox.showwarning("Input Error", "Please enter a Pokémon name!")
+            return
+
+        # Retrieve Pokémon information
+        pokemon_info = get_pokemon_info(poke)
+        if not pokemon_info:
+            messagebox.showerror("Error", f"Pokémon '{poke}' not found!")
+            return
+
+        # Generate the sound file name using Pokémon ID and form name
+        pokeID = str(pokemon_info['id']).zfill(4)
+        pokesound = f"{pokeID}_{pokemon_info['forms'][0]['name']}.latest"
+        out_file = Path(f"SoundStorage/{pokesound}.ogg").expanduser()
+
+        # Check if the sound file exists locally
+        if not out_file.exists():
+            # Download the sound file
+            try:
+                url = f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg"
+                resp = requests.get(url)
+                resp.raise_for_status()
+
+                out_file.parent.mkdir(parents=True, exist_ok=True)  # Create directory if it doesn't exist
+                with open(out_file, "wb") as fout:
+                    fout.write(resp.content)
+            except Exception as e:
+                messagebox.showerror("Error", f"An error occurred while downloading the sound file: {e}")
+                return
+
+        # Play the sound file using pygame
+        try:
+            pygame.mixer.quit()  # Reset pygame mixer settings
+            pygame.mixer.init()
+            pygame.mixer.music.load(str(out_file))
+            pygame.mixer.music.play()
+            messagebox.showinfo("Success", f"Playing sound for {poke.capitalize()}!")
+            # Keep the program running while the sound is playing
+            while pygame.mixer.music.get_busy():
+                continue
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while playing the sound: {e}")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"An unexpected error occurred: {e}")
+
     # Ask the user to input the name of a Pokémon they want to hear
     poke = input("What Pokémon do you want to hear? ")
 
@@ -134,6 +160,44 @@ def playallstoredsound():
     
 def viewstoresound():
     try:
+        # Create a new Toplevel window for displaying stored sounds
+        stored_window = tk.Toplevel(root)
+        stored_window.title("Stored Pokémon Sounds")
+        stored_window.geometry("300x400")
+
+        sound_storage = Path("SoundStorage").expanduser()
+        list_of_songs = os.listdir(sound_storage)
+        stored_names = []
+
+        # Collect the names of stored Pokémon sounds
+        for song in list_of_songs:
+            if song.endswith(".latest.ogg"):
+                song = song.replace(song[0:5], "", 1)  # Remove ID prefix
+                song = song.replace(".latest.ogg", "")  # Remove file extension
+                stored_names.append(song.capitalize())  # Capitalize for better readability
+
+        # Check if there are any stored sounds
+        if not stored_names:
+            label_empty = tk.Label(stored_window, text="No stored Pokémon sounds found!", font=("Arial", 12))
+            label_empty.pack(pady=20)
+        else:
+            # Display the list of stored Pokémon names in a Listbox
+            label_title = tk.Label(stored_window, text="Stored Pokémon Sounds:", font=("Arial", 14, "bold"))
+            label_title.pack(pady=10)
+
+            listbox = tk.Listbox(stored_window, height=20, width=30)
+            for name in stored_names:
+                listbox.insert(tk.END, name)
+            listbox.pack(pady=10)
+
+        # Add a Close button to the Toplevel window
+        close_button = tk.Button(stored_window, text="Close", command=stored_window.destroy)
+        close_button.pack(pady=10)
+
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred while viewing stored sounds: {e}")
+
+    try:
         print("Here is all the pokemon sounds that have been stored.")
         list_of_songs = os.listdir(r"SoundStorage"'\\')
         for song in list_of_songs:
@@ -144,7 +208,34 @@ def viewstoresound():
                 print(songcap)
     except:
         pass
-    
+   
+
+root = tk.Tk()
+root.title("Pokémon Sound Player")
+
+# Entry for entering Pokémon name
+label_pokemon = tk.Label(root, text="Enter Pokémon Name:")
+label_pokemon.pack(pady=5)
+
+entry_pokemon = tk.Entry(root)
+entry_pokemon.pack(pady=5)
+
+# Buttons for functions
+button_play = tk.Button(root, text="Play Pokémon Sound", command=playsound)
+button_play.pack(pady=5)
+
+button_play_all = tk.Button(root, text="Play All Stored Sounds", command=playallstoredsound)
+button_play_all.pack(pady=5)
+
+button_random = tk.Button(root, text="Play Random Pokémon Sound", command=playrandomsound)
+button_random.pack(pady=5)
+
+button_view_stored = tk.Button(root, text="View Stored Pokémon Sounds", command=viewstoresound)
+button_view_stored.pack(pady=5)
+
+# Run the GUI loop
+root.mainloop() 
+ 
 def main():
     a = 2
     while a == 2:
@@ -185,8 +276,7 @@ def main():
             print("")
             print("")
 
-main()
-
+GUI()
 
 
 
