@@ -7,6 +7,7 @@ import os
 import random
 from pathlib import Path
 import time
+
 def get_pokemon_info(name):
     base_url = "https://pokeapi.co/api/v2/pokemon/"
     try:
@@ -61,12 +62,13 @@ def playsound(root):
         if not already_stored:
             store_sound = messagebox.askyesno("Save Sound", "Do you want to store this Pokémon sound?")
             if not store_sound:
+                pygame.mixer.quit()
+                time.sleep(0.5)
                 os.remove(out_file)
         else:
-            messagebox.showinfo("Info", f"{poke.capitalize()} sound is already stored.")
+            pass
 
     root.after(0, ask_pokemon)
-
 
 def playrandomsound():
     try:
