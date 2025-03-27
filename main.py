@@ -116,16 +116,22 @@ def playrandomsound():
         messagebox.showerror("Error", "Failed to play random sound.")
 
 def playallstoredsound():
-    try:
+    try:        
         list_of_songs = os.listdir("SoundStorage")
-        for song in list_of_songs:
-            if song.endswith(".ogg"):
-                file_path = os.path.join("SoundStorage", song)
-                pygame.mixer.init()
-                pygame.mixer.music.load(str(file_path))
-                pygame.mixer.music.play()
-                while pygame.mixer.music.get_busy():
-                    continue
+        songs = [song for song in list_of_songs if song.endswith(".latest.ogg")]
+        if not songs:
+            messagebox.showinfo("Stored Pokémon Sounds", "No stored sounds found.")
+            return
+        
+        else:
+            for song in list_of_songs:
+                if song.endswith(".ogg"):
+                    file_path = os.path.join("SoundStorage", song)
+                    pygame.mixer.init()
+                    pygame.mixer.music.load(str(file_path))
+                    pygame.mixer.music.play()
+                    while pygame.mixer.music.get_busy():
+                        continue
     except:
         messagebox.showerror("Error", "Failed to play all stored sounds.")
 
