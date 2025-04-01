@@ -8,8 +8,6 @@ import random
 from pathlib import Path
 import time
 import csv
-from cryptography.fernet import Fernet
-
 
 def get_pokemon_info(name):
     base_url = "https://pokeapi.co/api/v2/pokemon/"
@@ -120,7 +118,7 @@ def playrandomsound():
 
 def playallstoredsound():
     try:        
-        list_of_songs = os.listdir(f"SoundStorage/{username}.poke")
+        list_of_songs = os.listdir("SoundStorage")
         songs = [song for song in list_of_songs if song.endswith(".latest.ogg")]
         if not songs:
             messagebox.showinfo("Stored Pokémon Sounds", "No stored sounds found.")
