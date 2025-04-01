@@ -7,6 +7,9 @@ import os
 import random
 from pathlib import Path
 import time
+import csv
+from cryptography.fernet import Fernet
+
 
 def get_pokemon_info(name):
     base_url = "https://pokeapi.co/api/v2/pokemon/"
@@ -19,9 +22,9 @@ def get_pokemon_info(name):
     except:
         return None
 
-def playsound(root):
+def playsound(a):
     def ask_pokemon():
-        poke = simpledialog.askstring("Pokémon Sound", "Enter Pokémon name:", parent=root)
+        poke = simpledialog.askstring("Pokémon Sound", "Enter Pokémon name:", parent=a)
         if not poke:
             return
         
@@ -33,7 +36,7 @@ def playsound(root):
         pokeID = str(pokemon_info['id'])
         pokesound = f"{pokeID.zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
         
-        sound_dir = "SoundStorage"
+        sound_dir = f"SoundStorage/{username}.poke"
         os.makedirs(sound_dir, exist_ok=True)
         out_file = Path(os.path.join(sound_dir, f"{pokesound}.ogg")).expanduser()
         
@@ -68,7 +71,7 @@ def playsound(root):
         else:
             pass
 
-    root.after(0, ask_pokemon)
+    a.after(0, ask_pokemon)
 
 def playrandomsound():
     try:
@@ -80,7 +83,7 @@ def playrandomsound():
         pokesound = f"{str(random_pokemon).zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
         pokeID = str(pokemon_info['id'])
         out_file = Path(os.path.join("RandomSound", f"{pokesound}.ogg")).expanduser()
-        out_file2 = Path(os.path.join("SoundStorage", f"{pokesound}.ogg")).expanduser()
+        out_file2 = Path(os.path.join(f"SoundStorage/{username}.poke", f"{pokesound}.ogg")).expanduser()
 
         already_stored = out_file2.exists()
         
@@ -117,7 +120,7 @@ def playrandomsound():
 
 def playallstoredsound():
     try:        
-        list_of_songs = os.listdir("SoundStorage")
+        list_of_songs = os.listdir(f"SoundStorage/{username}.poke")
         songs = [song for song in list_of_songs if song.endswith(".latest.ogg")]
         if not songs:
             messagebox.showinfo("Stored Pokémon Sounds", "No stored sounds found.")
@@ -144,8 +147,8 @@ def viewstoresound():
             messagebox.showinfo("Stored Pokémon Sounds", "No stored sounds found.")
             return
 
-        root = tk.Tk()
-        root.title("Stored Pokémon Sounds")
+        a = tk.Tk()
+        a.title("Stored Pokémon Sounds")
 
         def play_sound(file_path):
             try:
@@ -156,7 +159,7 @@ def viewstoresound():
                 messagebox.showerror("Error", f"Failed to play sound: {e}")
 
         for song in songs:
-            root.geometry("400x300")
+            a.geometry("400x300")
             pokemon_name = song.replace(song[0:5], "", 1).replace(".latest.ogg", "").capitalize()
             file_path = os.path.join("SoundStorage", song)
             COLORS  =['snow', 'ghost white', 'white smoke', 'gainsboro', 'floral white', 'old lace',
@@ -227,52 +230,150 @@ def viewstoresound():
 'gray1', 'gray2', 'gray3', 'gray4', 'gray5', 'gray6', 'gray7', 'gray8', 'gray9', 'gray10',
 'gray11', 'gray12', 'gray13', 'gray14', 'gray15', 'gray16', 'gray17', 'gray18', 'gray19']
             
-            button = tk.Button(root, 
+            button = tk.Button(a, 
                                text=pokemon_name, 
                                command=lambda path=file_path: play_sound(path),
                                 bg=COLORS[random.randint(0,len(COLORS)-1)])
         
             button.pack(pady=2)
 
-        root.mainloop()
+        a.mainloop()
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to load stored sounds: {e}")
 
 def main():
-    root = tk.Tk()
-    root.title("Pokémon Sound Player")
-    root.geometry("400x300")
+    a = tk.Tk()
+    a.title("Pokémon Sound Player")
+    a.geometry("400x300")
     
-    tk.Label(root, 
+    tk.Label(a, 
              text="Pokémon Sound Player", 
              font=("Arial", 14, "bold")).pack(pady=10)
     
-    tk.Button(root, 
+    tk.Button(a, 
               text="Play Pokémon Sound", 
-              command=lambda: threading.Thread(target=playsound, args=(root,)).start(), 
+              command=lambda: threading.Thread(target=playsound, args=(a,)).start(), 
               width=30, bg="light blue").pack(pady=5)
     
-    tk.Button(root, 
+    tk.Button(a, 
               text="Play Random Pokémon Sound", 
               command=lambda: threading.Thread(target=playrandomsound).start(), 
               width=30, bg="light blue").pack(pady=5)
     
-    tk.Button(root, 
+    tk.Button(a, 
               text="View Stored Pokémon Sounds", 
               command=lambda: threading.Thread(target=viewstoresound).start(), 
               width=30, bg="light blue").pack(pady=5)
     
-    tk.Button(root, 
+    tk.Button(a, 
               text="Play All Stored Sounds", 
               command=lambda: threading.Thread(target=playallstoredsound).start(), 
               width=30, bg="light blue").pack(pady=5)
     
-    tk.Button(root, 
+    tk.Button(a, 
               text="Exit", 
-              command=root.quit, 
+              command=a.quit, 
               width=30, bg='red').pack(pady=5)
     
-    root.mainloop()
+    a.mainloop()
 
-main()
+def main_action(action):
+    global username
+    username = username_entry.get()
+    password = password_entry.get()
+
+    # Ensure username and password are not empty
+    if not username or not password:
+        messagebox.showerror("Error", "Username and password cannot be empty.")
+        return
+
+    if action == "Create Account":
+        # Ensure username does not already exist
+        if os.path.exists("Login.csv"):
+            with open("Login.csv", mode="r") as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if row[0] == username:
+                        messagebox.showerror("Error", "Username already exists. Please choose a different one.")
+                        return
+
+        # Write new username and password to CSV file
+        with open("Login.csv", mode="a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([username, password])
+
+        # Create a ".poke" folder
+        poke_folder = os.path.join(os.getcwd(), f"SoundStorage/{username}.poke")
+        os.makedirs(poke_folder, exist_ok=True)
+
+        messagebox.showinfo("Account Created", f"Account created successfully!")
+        reset_form()
+        show_choice_screen()  # Redirect to choice screen (login or create)
+
+    elif action == "Login":
+        # Verify login credentials
+        if os.path.exists("Login.csv"):
+            with open("Login.csv", mode="r") as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if len(row) == 2 and row[0] == username and row[1] == password:
+                        root.destroy()  # Close the main window upon successful login
+                        main()
+                        return
+            messagebox.showerror("Login Failed", "Invalid username or password")
+        else:
+            messagebox.showerror("Error", "No login data found. Please create an account first.")
+
+def reset_form():
+    username_entry.delete(0, tk.END)
+    password_entry.delete(0, tk.END)
+
+def show_choice_screen():
+    login_frame.pack_forget()
+    choice_frame.pack(pady=20)
+
+def show_form(action):
+    choice_frame.pack_forget()
+    login_frame.pack(pady=20)
+    action_button.config(text=action, command=lambda: main_action(action))
+
+# Main window
+root = tk.Tk()
+root.title("Login or Create Account")
+
+# Frame for login and create account choice
+choice_frame = tk.Frame(root)
+choice_frame.pack(pady=20)
+
+choose_label = tk.Label(choice_frame, text="Choose an option:")
+choose_label.pack()
+
+login_button = tk.Button(choice_frame, text="Login", command=lambda: show_form("Login"))
+login_button.pack(pady=5)
+
+create_button = tk.Button(choice_frame, text="Create Account", command=lambda: show_form("Create Account"))
+create_button.pack(pady=5)
+
+# Frame for login and create account form
+login_frame = tk.Frame(root)
+
+username_label = tk.Label(login_frame, text="Username:")
+username_label.pack(pady=5)
+username_entry = tk.Entry(login_frame)
+username_entry.pack(pady=5)
+
+password_label = tk.Label(login_frame, text="Password:")
+password_label.pack(pady=5)
+password_entry = tk.Entry(login_frame, show="*")
+password_entry.pack(pady=5)
+
+action_button = tk.Button(login_frame, text="Login", command=lambda: main_action("Login"))
+action_button.pack(pady=10)
+
+# Add a "Back" button
+back_button = tk.Button(login_frame, text="Back", command=show_choice_screen)
+back_button.pack(pady=5)
+
+# Start the application
+root.mainloop()
