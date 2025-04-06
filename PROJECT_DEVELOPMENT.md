@@ -172,4 +172,7 @@ END playrandomsound()
 | Variable | Data Type | Format for Display | Size in Bytes | Size for Display | Description | Example | Validation |
 | -------- | ------- | -------- | ------- | -------- | ------- | -------- | -------- |
 | PokemonID | Integer | Whole number | 4 | 4 | The pokemon's ID number | 123 | It has to be bigger or equal to one or small or equal to 1302 |
+| PokemonName | String | Text | 50 | 50 | The pokemon's name number | Ditto | It has to be a valid pokemon name |
+| Username | String | Text | 50 | 50 | The username of the user | Yyoungion | It has to be a regestered username from the Login.csv. |
+| Password | String | Text | 50 | 50 | The password in relation to the username | Password1 | It has to be the regestered password from Login.csv in relation to the username inputed. |
 
