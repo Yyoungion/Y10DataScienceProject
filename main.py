@@ -8,7 +8,6 @@ import random
 from pathlib import Path
 import time
 import csv
-from cryptography.fernet import Fernet
 
 
 def get_pokemon_info(name):
@@ -35,7 +34,7 @@ def playsound(a):
         
         pokeID = str(pokemon_info['id'])
         pokesound = f"{pokeID.zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
-        
+
         sound_dir = f"SoundStorage/{username}.poke"
         os.makedirs(sound_dir, exist_ok=True)
         out_file = Path(os.path.join(sound_dir, f"{pokesound}.ogg")).expanduser()
@@ -129,7 +128,7 @@ def playallstoredsound():
         else:
             for song in list_of_songs:
                 if song.endswith(".ogg"):
-                    file_path = os.path.join("SoundStorage", song)
+                    file_path = os.path.join(f"SoundStorage/{username}.poke", song)
                     pygame.mixer.init()
                     pygame.mixer.music.load(str(file_path))
                     pygame.mixer.music.play()
@@ -140,7 +139,7 @@ def playallstoredsound():
 
 def viewstoresound():
     try:
-        list_of_songs = os.listdir("SoundStorage")
+        list_of_songs = os.listdir(f"SoundStorage/{username}.poke")
         songs = [song for song in list_of_songs if song.endswith(".latest.ogg")]
 
         if not songs:
@@ -161,7 +160,7 @@ def viewstoresound():
         for song in songs:
             a.geometry("400x300")
             pokemon_name = song.replace(song[0:5], "", 1).replace(".latest.ogg", "").capitalize()
-            file_path = os.path.join("SoundStorage", song)
+            file_path = os.path.join(f"SoundStorage/{username}.poke", song)
             COLORS  =['snow', 'ghost white', 'white smoke', 'gainsboro', 'floral white', 'old lace',
 'linen', 'antique white', 'papaya whip', 'blanched almond', 'bisque', 'peach puff',
 'navajo white', 'lemon chiffon', 'mint cream', 'azure', 'alice blue', 'lavender',
@@ -214,7 +213,7 @@ def viewstoresound():
 'burlywood2', 'burlywood3', 'burlywood4', 'wheat1', 'wheat2', 'wheat3', 'wheat4', 'tan1',
 'tan2', 'tan4', 'chocolate1', 'chocolate2', 'chocolate3', 'firebrick1', 'firebrick2',
 'firebrick3', 'firebrick4', 'brown1', 'brown2', 'brown3', 'brown4', 'salmon1', 'salmon2',
-'salmon3', 'salmon4', 'LightSalmon2', 'LightSalmon3', 'LightSalmon4', 'orange2',
+'salmon3', 'salmon4', 'LightSalmon2', 'LightSalmon4', 'orange2',
 'orange3', 'orange4', 'DarkOrange1', 'DarkOrange2', 'DarkOrange3', 'DarkOrange4',
 'coral1', 'coral2', 'coral3', 'coral4', 'tomato2', 'tomato3', 'tomato4', 'OrangeRed2',
 'OrangeRed3', 'OrangeRed4', 'red2', 'red3', 'red4', 'DeepPink2', 'DeepPink3', 'DeepPink4',
@@ -340,7 +339,7 @@ def show_form(action):
 
 # Main window
 root = tk.Tk()
-root.title("Login or Create Account")
+root.title("Login or Create Account")   
 
 # Frame for login and create account choice
 choice_frame = tk.Frame(root)
