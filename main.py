@@ -1,3 +1,5 @@
+#--- Imports ---
+
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import threading
@@ -9,66 +11,85 @@ from pathlib import Path
 import time
 import csv
 
+#--- Obtains the download link for the pokemon ---
+
 def get_pokemon_info(name):
-    base_url = "https://pokeapi.co/api/v2/pokemon/"
+    base_url = "https://pokeapi.co/api/v2/pokemon/"  # Define the base URL for the Pokémon API.
     try:
-        response = requests.get(f"{base_url}{name.lower()}")
-        if response.status_code == 200:
+        response = requests.get(f"{base_url}{name.lower()}") # Make a request to the API using the provided Pokémon name
+    
+        if response.status_code == 200: # If the response status code is 200, return the JSON data.
             return response.json()
-        else:
-            return None
-    except:
+        else: # If the response status is not 200, return nothing
+            return None 
+    except: # If an exception occurs during the API request return nothing.
         return None
+    
+#----- Playsound Function -----
 
 def playsound(a):
     def ask_pokemon():
-        poke = simpledialog.askstring("Pokémon Sound", "Enter Pokémon name:", parent=a)
-        if not poke:
+        poke = simpledialog.askstring("Pokémon Sound", "Enter Pokémon name:", parent=a) # Ask user to input a Pokémon name using a dialog window.
+        if not poke: # Exit if the user doesn't give a name or closes the window.
             return
         
+        # Retrieve Pokémon information using the name provided by the user.
         pokemon_info = get_pokemon_info(poke)
+        # Show an error message if the Pokémon information is not found.
         if not pokemon_info:
             messagebox.showerror("Error", "Pokémon not found.")
             return
         
+        # Extract the Pokémon ID and prepare the sound file name.
         pokeID = str(pokemon_info['id'])
         pokesound = f"{pokeID.zfill(4)}_{pokemon_info['forms'][0]['name']}.latest"
 
+        # Set up the directory for storing Pokémon sound files.
         sound_dir = f"SoundStorage/{username}.poke"
-        os.makedirs(sound_dir, exist_ok=True)
+        os.makedirs(sound_dir, exist_ok=True)  # Ensure the directory exists.
+        # Define the full path for the sound file and expand user-specific paths.
         out_file = Path(os.path.join(sound_dir, f"{pokesound}.ogg")).expanduser()
         
+        # Check if the sound file has already been downloaded.
         already_stored = out_file.exists()
 
+        # If the file isn't already stored, attempt to download it from the API.
         if not already_stored:
             try:
                 resp = requests.get(f"https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{pokeID}.ogg", stream=True)
-                resp.raise_for_status()
+                resp.raise_for_status()  # Raise an exception for HTTP errors.
+                # Save the content of the response as a sound file.
                 with open(out_file, "wb") as fout:
                     fout.write(resp.content)
             except:
+                # Show an error message if the download fails.
                 messagebox.showerror("Error", "Failed to download sound.")
                 return
         
+        # Attempt to play the sound file using Pygame.
         try:
-            pygame.mixer.init()
-            pygame.mixer.music.load(str(out_file))
-            pygame.mixer.music.play()
-            while pygame.mixer.music.get_busy():
+            pygame.mixer.init()  # Initialize the Pygame sound mixer.
+            pygame.mixer.music.load(str(out_file))  # Load the sound file.
+            pygame.mixer.music.play()  # Play the sound.
+            while pygame.mixer.music.get_busy():  # Wait until playback is complete.
                 continue
         except Exception as e:
+            # Show an error message if sound playback fails.
             messagebox.showerror("Error", f"Failed to play sound: {e}")
             return
         
+        # Ask the user if they want to store the sound file permanently.
         if not already_stored:
             store_sound = messagebox.askyesno("Save Sound", "Do you want to store this Pokémon sound?")
             if not store_sound:
+                # If the user chooses not to save, stop playback and delete the file.
                 pygame.mixer.quit()
                 time.sleep(0.5)
                 os.remove(out_file)
         else:
-            pass
+            pass  # If the file is already stored, do nothing further.
 
+    # Schedule the Pokémon interaction function to run after the initial setup.
     a.after(0, ask_pokemon)
 
 def playrandomsound():
@@ -117,32 +138,24 @@ def playrandomsound():
         messagebox.showerror("Error", "Failed to play random sound.")
 
 def playallstoredsound():
-    try:        
-        list_of_songs = os.listdir("SoundStorage")
-        for song in list_of_songs:
-            if song.endswith(".ogg"):
-                file_path = os.path.join("SoundStorage", song)
-                pygame.mixer.init()
-                pygame.mixer.music.load(str(file_path))
-                pygame.mixer.music.play()
-                while pygame.mixer.music.get_busy():
-                    continue
-        songs = [song for song in list_of_songs if song.endswith(".latest.ogg")]
-        if not songs:
-            messagebox.showinfo("Stored Pokémon Sounds", "No stored sounds found.")
-            return
-        
-        else:
-            for song in list_of_songs:
-                if song.endswith(".ogg"):
-                    file_path = os.path.join(f"SoundStorage/{username}.poke", song)
-                    pygame.mixer.init()
-                    pygame.mixer.music.load(str(file_path))
-                    pygame.mixer.music.play()
-                    while pygame.mixer.music.get_busy():
-                        continue
-    except:
-        messagebox.showerror("Error", "Failed to play all stored sounds.")
+     try:        
+         list_of_songs = os.listdir(f"SoundStorage/{username}.poke")
+         songs = [song for song in list_of_songs if song.endswith(".latest.ogg")]
+         if not songs:
+             messagebox.showinfo("Stored Pokémon Sounds", "No stored sounds found.")
+             return
+ 
+         else:
+             for song in list_of_songs:
+                 if song.endswith(".ogg"):
+                     file_path = os.path.join(f"SoundStorage/{username}.poke", song)
+                     pygame.mixer.init()
+                     pygame.mixer.music.load(str(file_path))
+                     pygame.mixer.music.play()
+                     while pygame.mixer.music.get_busy():
+                         continue
+     except:
+         messagebox.showerror("Error", "Failed to play all stored sounds.")
 
 def viewstoresound():
     try:
