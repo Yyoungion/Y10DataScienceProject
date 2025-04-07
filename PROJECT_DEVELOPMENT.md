@@ -176,3 +176,70 @@ END playrandomsound()
 | Username | String | Text | 50 | 50 | The username of the user | Yyoungion | It has to be a regestered username from the Login.csv. |
 | Password | String | Text | 50 | 50 | The password in relation to the username | Password1 | It has to be the regestered password from Login.csv in relation to the username inputed. |
 
+
+
+## Editing Github Commits
+
+**Mar 5**
+* Documentation
+* Started working on Documenting the requirements and specifications on markdown. I got up to Non-Functional Requirements - Reliability.
+
+**Mar 7**
+* Began Program Experimenting
+* I tried to test playing sound from my API. It did not work. I then found a tutorial that taught me how to request from an API. It allowed me to request things like ID and Typings for pokemon, which allowed me to start understanding how requesting worked. Next, I needed to figure out how to download a MP3 file from a provied link.
+
+**Mar 10**
+* Project Development
+* I continued to work on my documentation, finished the reqirements and specifications. I also created a Gantt chart. 
+
+**Mar 11**
+* Flowchart & Structure Chart
+* I created my Flowchart for main() and Sructure chart. 
+
+**Mar 13**
+* Program testing
+* Nothing much was done here. I tried to play sound but it failed miserably. 
+
+**Mar 17**
+* Algorithm - Playrandomsound
+* I have added a flowchart for playrandomsound 
+
+**Mar 18**  
+* Algorithm Playsound
+* I added a flowchart for playsound.  I also developed my python. It can now obtain the download link for pokemon sound file.
+
+**Mar 19**
+* Attempted to play sound
+* I tried to playsound using the download link. I then figured out that I have to download the file before being able to play sound from it
+
+**Mar 20**
+* Psuedocode
+* I created psuedocode for all 3 of my flowcharts. I also made a Data Dictionary
+
+**Mar 21**
+* Playsound!
+* I can now download and playsound from the API. However, I ran into a problem where the path for the folder was different for each person, which I had to find a way to fix.
+
+**Mar 24**
+* Fixed Downloading problem
+* The program now does not break if an already downloaded file wants to get downloaded again. 
+
+**Mar 25**
+* GUI Attempt
+* I tried to create a gui but I had no idea how to do it. I almost broke my code and later had to revert back to an earlier commit. I then made a simple version of my GUI later that afternoon.
+
+**Mar 26**
+* Easteregg
+* I created a fun thin where every time someone wanted to view stored sounds, all the buttons were random colors.
+
+**Mar 27**
+* Error handling
+* Created a thing where if there were no stored sounds, it would output: No stored sounds found, instead of breaking.
+
+**Apr 2**
+* Created Login
+* I created a login, which allowed for individual people's sounds to be stored in their own seperate folders. 
+
+**Apr 7** (Current)
+* Redid the Github Commits. I also updated the structure chart to match the my program, such as the addition of a login.
+
