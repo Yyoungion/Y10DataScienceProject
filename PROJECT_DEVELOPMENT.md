@@ -243,3 +243,19 @@ END playrandomsound()
 **Apr 7** (Current)
 * Redid the Github Commits. I also updated the structure chart to match the my program, such as the addition of a login.
 
+
+## Maintenance Questions
+
+**1**: The pokemon API has different versions. The pokemon API version I am using is V2. It the pokemon API was to be upgraded, it would become V3. Using Try and Except, it would prevent the program from crashing and it should be able to handle errors.
+
+**2**: In the requirements.txt, it will install the exact version I am using for the program, instead of the latest version, which might have changed what something does.
+
+**3**: I will first identify the bug. I would get error logs, user feedback and screenshots. I would then test the program using Unit Testing. After identifying where the bug is found, The program will be updated with the bug fixed.
+
+**4**:  Organise the program by using functions to separate the different parts and functions of the code. Having a README will tell users how to use the program, how to install requirements, how to run the code and how the code works. Using github, updating the program will be really easy and simple.
+
+**5**: I feel that my program accuratly reflects the requrements. I added extra things along with what was already required in the functional requirements. However, I feel that my GUI could have looked better, even if its not mentions in the non-functional requirements.
+
+**6**: I could have added a encryption for passwords, to increase the security of the login features. 
+
+**7**: I believe that I managed the project time management really well. I was not short on time. I received a lot of help from stack overflow, with assistance and guides on how to make my ideas happen, especially when I was working on downloading the soundfiles, and playing them, stack overflow helped a lot. Other than programing challanges, not many other challanges wer faced during the development process.
